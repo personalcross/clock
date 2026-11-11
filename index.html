@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
 
-    <title>Clock | EPC</title>
+    <title>Relógio | EPC</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="shortcut icon" href="https://personalcross.github.io/assets/favicon/favicon.png">
@@ -65,65 +65,65 @@
         <section class="clock-container">
 
             <div class="clock-settings">
-                <h4>Interval Timer</h4>
+                <h4>Temporizador</h4>
 
                 <div class="row">
                     <div class="input-field col s12 m4">
                         <input id="rounds" type="number" min="1" max="99" value="5">
-                        <label for="rounds" class="active">Rounds</label>
+                        <label for="rounds" class="active">Rodadas</label>
                     </div>
 
                     <div class="input-field col s6 m4">
                         <input id="work-minutes" type="number" min="0" max="99" value="1">
-                        <label for="work-minutes" class="active">Work (minutes)</label>
+                        <label for="work-minutes" class="active">Foco (minutos)</label>
                     </div>
 
                     <div class="input-field col s6 m4">
                         <input id="work-seconds" type="number" min="0" max="59" value="0">
-                        <label for="work-seconds" class="active">Work (seconds)</label>
+                        <label for="work-seconds" class="active">Foco (segundos)</label>
                     </div>
 
                     <div class="input-field col s6 m4">
                         <input id="rest-minutes" type="number" min="0" max="99" value="0">
-                        <label for="rest-minutes" class="active">Rest (minutes)</label>
+                        <label for="rest-minutes" class="active">Descanso (minutos)</label>
                     </div>
 
                     <div class="input-field col s6 m4">
                         <input id="rest-seconds" type="number" min="0" max="59" value="30">
-                        <label for="rest-seconds" class="active">Rest (seconds)</label>
+                        <label for="rest-seconds" class="active">Descanso (segundos)</label>
                     </div>
                 </div>
 
                 <p id="settings-error" class="red-text"></p>
 
                 <button id="apply-settings" class="btn">
-                    Apply settings
+                    Aplicar mudanças
                 </button>
             </div>
 
             <div class="clock-display">
 
-                <p id="clock-phase">READY</p>
+                <p id="clock-phase">PREPARADO</p>
 
                 <div id="clock-time" class="clock-time">
                     01:00
                 </div>
 
                 <p id="clock-round">
-                    Round 0 / 5
+                    Rodada 0 / 5
                 </p>
 
                 <div class="clock-controls">
                     <button id="start-clock" class="btn green">
-                        Start
+                        Começar
                     </button>
 
                     <button id="pause-clock" class="btn orange" disabled>
-                        Pause
+                        Parar
                     </button>
 
                     <button id="reset-clock" class="btn red">
-                        Reset
+                        Reiniciar
                     </button>
                 </div>
 
