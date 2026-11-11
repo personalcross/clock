@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
 
-    <title>Checkin | EPC</title>
+    <title>Clock | EPC</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="shortcut icon" href="https://personalcross.github.io/assets/favicon/favicon.png">
@@ -62,25 +62,73 @@
                 <button id="btn-logout" class="logged-only">Sair</button>
             </div>
         </aside>
-        <section>
-            <h2 class="section-title">Check-in</h4>
-            <form id="checkin-form">
-                <div class="input-field">
-                    <input type="number" id="customer-identifier" required />
-                    <label for="customer-identifier">Número do Cliente</label>
+        <section class="clock-container">
+
+            <div class="clock-settings">
+                <h4>Interval Timer</h4>
+
+                <div class="row">
+                    <div class="input-field col s12 m4">
+                        <input id="rounds" type="number" min="1" max="99" value="5">
+                        <label for="rounds" class="active">Rounds</label>
+                    </div>
+
+                    <div class="input-field col s6 m4">
+                        <input id="work-minutes" type="number" min="0" max="99" value="1">
+                        <label for="work-minutes" class="active">Work (minutes)</label>
+                    </div>
+
+                    <div class="input-field col s6 m4">
+                        <input id="work-seconds" type="number" min="0" max="59" value="0">
+                        <label for="work-seconds" class="active">Work (seconds)</label>
+                    </div>
+
+                    <div class="input-field col s6 m4">
+                        <input id="rest-minutes" type="number" min="0" max="99" value="0">
+                        <label for="rest-minutes" class="active">Rest (minutes)</label>
+                    </div>
+
+                    <div class="input-field col s6 m4">
+                        <input id="rest-seconds" type="number" min="0" max="59" value="30">
+                        <label for="rest-seconds" class="active">Rest (seconds)</label>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button class="btn waves-effect waves-light" type="submit">Confirmar</button>
+
+                <p id="settings-error" class="red-text"></p>
+
+                <button id="apply-settings" class="btn">
+                    Apply settings
+                </button>
+            </div>
+
+            <div class="clock-display">
+
+                <p id="clock-phase">READY</p>
+
+                <div id="clock-time" class="clock-time">
+                    01:00
                 </div>
-                <div class="error red-text" style="margin-top: 1rem;"></div>
-            </form>
-        </section>
-        <section>
-            <h2 class="section-title">Notas</h2>
-            <p>
-                Na página dos clientes é possível ver os números dos cliente logo a frente.
-                Com este número é possível fazer o check-in do cliente específico.
-            </p>
+
+                <p id="clock-round">
+                    Round 0 / 5
+                </p>
+
+                <div class="clock-controls">
+                    <button id="start-clock" class="btn green">
+                        Start
+                    </button>
+
+                    <button id="pause-clock" class="btn orange" disabled>
+                        Pause
+                    </button>
+
+                    <button id="reset-clock" class="btn red">
+                        Reset
+                    </button>
+                </div>
+
+            </div>
+
         </section>
     </main>
     <footer>
@@ -96,11 +144,11 @@
                 <p>Siga-nos:</p>
                 <div class="social-links">
                     <a href="https://www.instagram.com/ep.cross?igsi=NGg0cnl1aTFvYTFr" aria-label="Instagram"
-                        target="_blank" rel="noopener noreferrer">
+                       target="_blank" rel="noopener noreferrer">
                         <img src="https://www.vectorlogo.zone/logos/instagram/instagram-tile.svg" alt="instagram">
                     </a>
                     <a href="https://www.instagram.com/ep.cross?igsi=NGg0cnl1aTFvYTFr" aria-label="LinkedIn"
-                        target="_blank" rel="noopener noreferrer">
+                       target="_blank" rel="noopener noreferrer">
                         <img src="https://www.vectorlogo.zone/logos/linkedin/linkedin-tile.svg" alt="linkedin">
                     </a>
                 </div>
@@ -113,12 +161,12 @@
 
     <script src="cs.js"></script>
     <script src="config.js"></script>
-    <script src="listener.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="hamburgerui.js"></script>
     <script src="sidebarui.js"></script>
     <script src="auth.js"></script>
     <script src="time.js"></script>
+    <script src="main.js"></script>
 
 </body>
 
