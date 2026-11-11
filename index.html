@@ -64,72 +64,116 @@
         </aside>
         <section class="clock-container">
 
-            <div class="clock-settings">
-                <h4>Temporizador</h4>
-
-                <div class="row">
-                    <div class="input-field col s12 m4">
-                        <input id="rounds" type="number" min="1" max="99" value="5">
-                        <label for="rounds" class="active">Rodadas</label>
-                    </div>
-
-                    <div class="input-field col s6 m4">
-                        <input id="work-minutes" type="number" min="0" max="99" value="1">
-                        <label for="work-minutes" class="active">Foco (minutos)</label>
-                    </div>
-
-                    <div class="input-field col s6 m4">
-                        <input id="work-seconds" type="number" min="0" max="59" value="0">
-                        <label for="work-seconds" class="active">Foco (segundos)</label>
-                    </div>
-
-                    <div class="input-field col s6 m4">
-                        <input id="rest-minutes" type="number" min="0" max="99" value="0">
-                        <label for="rest-minutes" class="active">Descanso (minutos)</label>
-                    </div>
-
-                    <div class="input-field col s6 m4">
-                        <input id="rest-seconds" type="number" min="0" max="59" value="30">
-                        <label for="rest-seconds" class="active">Descanso (segundos)</label>
-                    </div>
+            <div class="clock-header">
+                <div>
+                    <h4>Temporizador</h4>
+                    <p id="settings-summary">
+                        5 rodadas · Foco 01:00 · Descanso 00:30
+                    </p>
                 </div>
 
-                <p id="settings-error" class="red-text"></p>
-
-                <button id="apply-settings" class="btn">
-                    Aplicar mudanças
+                <button id="open-settings" class="settings-button" aria-label="Configurar temporizador"
+                    title="Configurar temporizador">
+                    ⚙
                 </button>
             </div>
 
             <div class="clock-display">
 
-                <p id="clock-phase">PREPARADO</p>
+                <div id="clock-phase" class="clock-phase">
+                    PREPARE-SE
+                </div>
 
                 <div id="clock-time" class="clock-time">
                     01:00
                 </div>
 
-                <p id="clock-round">
-                    Rodada 0 / 5
-                </p>
+                <div class="round-progress">
+                    <span id="clock-round">Rodada 0 de 5</span>
+                </div>
 
                 <div class="clock-controls">
-                    <button id="start-clock" class="btn green">
+
+                    <button id="toggle-clock" class="btn green clock-main-button">
                         Começar
                     </button>
 
-                    <button id="pause-clock" class="btn orange" disabled>
-                        Parar
+                    <button id="reset-clock" class="btn clock-reset-button">
+                        ↻ Reiniciar
                     </button>
 
-                    <button id="reset-clock" class="btn red">
-                        Reiniciar
-                    </button>
                 </div>
 
             </div>
 
         </section>
+
+        <!-- Timer configuration modal -->
+        <div id="settings-modal" class="modal clock-modal">
+
+            <div class="modal-content">
+
+                <h5>Configurar temporizador</h5>
+                <p class="modal-description">
+                    Defina os parâmetros da sessão de treino.
+                </p>
+
+                <!-- Rounds -->
+                <div class="settings-group">
+                    <label for="rounds">Número de rodadas</label>
+
+                    <input id="rounds" type="number" min="1" max="99" value="5">
+                </div>
+
+                <!-- Work duration -->
+                <div class="settings-group">
+                    <label>Tempo de foco</label>
+
+                    <div class="time-input-group">
+
+                        <input id="work-minutes" type="number" min="0" max="59" value="1" aria-label="Minutos de foco">
+
+                        <span>:</span>
+
+                        <input id="work-seconds" type="number" min="0" max="59" value="0" aria-label="Segundos de foco">
+
+                    </div>
+                </div>
+
+                <!-- Rest duration -->
+                <div class="settings-group">
+                    <label>Tempo de descanso</label>
+
+                    <div class="time-input-group">
+
+                        <input id="rest-minutes" type="number" min="0" max="59" value="0"
+                            aria-label="Minutos de descanso">
+
+                        <span>:</span>
+
+                        <input id="rest-seconds" type="number" min="0" max="59" value="30"
+                            aria-label="Segundos de descanso">
+
+                    </div>
+                </div>
+
+                <p class="time-input-hint">Formato: minutos : segundos</p>
+
+                <p id="settings-error" class="red-text"></p>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="modal-close btn-flat">
+                    Cancelar
+                </button>
+
+                <button id="apply-settings" class="btn green">
+                    Salvar configurações
+                </button>
+            </div>
+
+        </div>
     </main>
     <footer>
         <div class="highlight">
@@ -144,11 +188,11 @@
                 <p>Siga-nos:</p>
                 <div class="social-links">
                     <a href="https://www.instagram.com/ep.cross?igsi=NGg0cnl1aTFvYTFr" aria-label="Instagram"
-                       target="_blank" rel="noopener noreferrer">
+                        target="_blank" rel="noopener noreferrer">
                         <img src="https://www.vectorlogo.zone/logos/instagram/instagram-tile.svg" alt="instagram">
                     </a>
                     <a href="https://www.instagram.com/ep.cross?igsi=NGg0cnl1aTFvYTFr" aria-label="LinkedIn"
-                       target="_blank" rel="noopener noreferrer">
+                        target="_blank" rel="noopener noreferrer">
                         <img src="https://www.vectorlogo.zone/logos/linkedin/linkedin-tile.svg" alt="linkedin">
                     </a>
                 </div>
@@ -166,6 +210,7 @@
     <script src="sidebarui.js"></script>
     <script src="auth.js"></script>
     <script src="time.js"></script>
+    <script src="modal.js"></script>
     <script src="main.js"></script>
 
 </body>

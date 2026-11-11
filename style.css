@@ -1,0 +1,279 @@
+/* ========================================
+   CLOCK CONTAINER
+======================================== */
+
+.clock-container {
+    width: min(100% - 32px, 700px);
+    margin: 40px auto;
+    padding: 24px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.clock-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid var(--background-clear);
+    padding-bottom: 16px;
+}
+
+.clock-header h4 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.clock-header p {
+    margin: 6px 0 0;
+    color: #777;
+    font-size: 0.9rem;
+}
+
+.settings-button {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: #f2f2f2;
+    color: #333;
+    font-size: 25px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.settings-button:hover {
+    background: #e5e5e5;
+    transform: rotate(30deg);
+}
+
+/* ========================================
+   CLOCK DISPLAY
+======================================== */
+
+.clock-display {
+    text-align: center;
+    padding: 55px 10px 35px;
+}
+
+.clock-phase {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+.clock-phase.foco {
+    color: var(--color-affirmative);
+}
+
+.clock-phase.descanso {
+    color: var(--background-mid);
+}
+
+.clock-phase.finalizado {
+    color: var(--color-negative);
+}
+
+.clock-phase.contagem {
+    color: var(--background-mid);
+}
+
+.clock-phase.pausado {
+    color: var(--color-stand-by);
+}
+
+/* ========================================
+   DIGITAL TIME
+======================================== */
+
+.clock-time {
+    font-size: clamp(5rem, 16vw, 9rem);
+    line-height: 1;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -5px;
+    color: var(--background-dark);
+    margin: 15px 0 25px;
+}
+
+/* ========================================
+   ROUND PROGRESS
+======================================== */
+
+.round-progress {
+    margin-bottom: 35px;
+    color: #777;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* ========================================
+   CONTROLS
+======================================== */
+
+.clock-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.clock-controls button {
+    height: 52px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: none;
+}
+
+.clock-main-button {
+    min-width: 180px;
+}
+
+.clock-reset-button {
+    background: #ededed;
+    color: #333;
+    box-shadow: none;
+}
+
+.clock-reset-button:hover {
+    background: #dedede;
+    box-shadow: none;
+}
+
+/* ========================================
+   SETTINGS MODAL
+======================================== */
+
+.clock-modal {
+    max-width: 460px;
+    max-height: 85%;
+    border-radius: 12px;
+}
+
+.clock-modal .modal-content {
+    padding: 28px;
+}
+
+.clock-modal h5 {
+    font-weight: 700;
+    margin-top: 0;
+}
+
+.modal-description {
+    color: #777;
+    margin-bottom: 28px;
+}
+
+.settings-group {
+    margin-bottom: 24px;
+}
+
+.settings-group label {
+    display: block;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.settings-group input[type="number"] {
+    box-sizing: border-box;
+    margin: 0;
+    height: 48px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: none;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.settings-group input[type="number"]:focus {
+    border: 1px solid var(--color-affirmative);
+    box-shadow: 0 1px 0 var(--color-affirmative);
+}
+
+.time-input-group {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    max-width: 230px;
+}
+
+.time-input-group input {
+    flex: 1;
+    min-width: 0;
+}
+
+.time-input-group span {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #555;
+}
+
+.time-input-hint {
+    color: #999;
+    font-size: 0.8rem;
+    margin-top: -12px;
+}
+
+#settings-error {
+    min-height: 20px;
+    font-size: 0.9rem;
+}
+
+.clock-modal .modal-footer {
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 600px) {
+
+    .clock-container {
+        width: calc(100% - 20px);
+        margin: 20px auto;
+        padding: 16px;
+    }
+
+    .clock-display {
+        padding: 55px 0 30px;
+    }
+
+    .clock-time {
+        letter-spacing: -3px;
+    }
+
+    .clock-main-button {
+        width: 100%;
+    }
+
+    .clock-reset-button {
+        width: 100%;
+    }
+
+    .clock-controls {
+        flex-direction: column;
+    }
+
+    .clock-modal {
+        width: 92%;
+    }
+}

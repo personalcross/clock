@@ -12,17 +12,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const phaseDisplay = document.getElementById("clock-phase");
     const timeDisplay = document.getElementById("clock-time");
     const roundDisplay = document.getElementById("clock-round");
+    const summaryDisplay = document.getElementById("settings-summary");
 
-    const startButton = document.getElementById("start-clock");
-    const pauseButton = document.getElementById("pause-clock");
+    const toggleButton = document.getElementById("toggle-clock");
     const resetButton = document.getElementById("reset-clock");
 
     const errorDisplay = document.getElementById("settings-error");
 
+    const modalElement = document.getElementById("settings-modal");
+
     let settings = {
         rounds: 5,
         work: 60,
-        rest: 30,
+        rest: 30
     };
 
     let currentRound = 0;
@@ -34,14 +36,17 @@ document.addEventListener("DOMContentLoaded", () => {
     let interval = null;
 
     let running = false;
+    let paused = false;
     let finished = false;
 
-    let audioContext = null;
 
     let starting = false;
+
     let countdownTimeout = null;
     let countdownInterval = null;
     let countdownEndTimestamp = null;
+
+    let audioContext = null;
 
     function initializeAudio() {
         if (!audioContext) {
@@ -58,7 +63,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function playTone(frequency, duration, delay = 0, type = "sine", endFrequency = frequency) {
+    function playTone(
+        frequency,
+        duration,
+        delay = 0,
+        type = "sine",
+        endFrequency = frequency
+    ) {
         if (!audioContext) return;
 
         const oscillator = audioContext.createOscillator();
@@ -83,8 +94,6 @@ document.addEventListener("DOMContentLoaded", () => {
         oscillator.start(start);
         oscillator.stop(end);
     }
-
-
 
     function playStartSound() {
         playTone(880.00, 0.15, 0); // A5
@@ -126,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ];
 
         if (values.some(value => !Number.isInteger(value) || value < 0)) {
-            throw new Error("Por favor, inserir valores positivos inteiros.");
+            throw new Error("Por favor, inserir valores inteiros positivos.");
         }
 
         if (rounds < 1 || rounds > 99) {
@@ -134,8 +143,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (
-            workMinutes > 59 || restMinutes > 59
-            || workSeconds > 59 || restSeconds > 59
+            workMinutes > 59 || restMinutes > 59 ||
+            workSeconds > 59 || restSeconds > 59
         ) {
             throw new Error("Valores inválidos para tempo.");
         }
@@ -144,83 +153,137 @@ document.addEventListener("DOMContentLoaded", () => {
         const rest = restMinutes * 60 + restSeconds;
 
         if (work <= 0) {
-            throw new Error("Tempo de duração do período de foco deve ser maior que zero.");
+            throw new Error("O tempo de foco deve ser maior que zero.");
         }
 
-        return {
-            rounds,
-            work,
-            rest
-        };
+        return { rounds, work, rest };
+    }
+
+    function loadSettingsIntoForm() {
+        roundsInput.value = settings.rounds;
+
+        workMinutesInput.value = Math.floor(settings.work / 60);
+        workSecondsInput.value = settings.work % 60;
+
+        restMinutesInput.value = Math.floor(settings.rest / 60);
+        restSecondsInput.value = settings.rest % 60;
+    }
+
+    function updateSummary() {
+        summaryDisplay.textContent =
+            `${settings.rounds} rodadas · ` +
+            `Foco ${formatTime(settings.work)} · ` +
+            `Descanso ${formatTime(settings.rest)}`;
     }
 
     function applySettings() {
-
-        if (running) return;
+        if (running || starting) return;
 
         try {
+
             settings = getSettings();
+
             errorDisplay.textContent = "";
+
+            updateSummary();
             resetTimer();
+
+            const modal = M.Modal.getInstance(modalElement);
+
+            if (modal) modal.close();
+
         } catch (error) {
+
             errorDisplay.textContent = error.message;
         }
     }
 
     function formatTime(seconds) {
-
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
 
         return (
-            String(minutes).padStart(2, "0")
-            + ":"
-            + String(remainingSeconds).padStart(2, "0")
+            String(minutes).padStart(2, "0") +
+            ":" +
+            String(remainingSeconds).padStart(2, "0")
         );
     }
 
     function updateDisplay() {
-
         timeDisplay.textContent = formatTime(remainingTime);
-        phaseDisplay.textContent = currentPhase;
+
+        const displayPhase = paused ? "PAUSADO" : currentPhase;
+
+        phaseDisplay.textContent = displayPhase;
 
         roundDisplay.textContent =
-            `Round ${currentRound} / ${settings.rounds}`;
+            `Rodada ${currentRound} de ${settings.rounds}`;
 
-        phaseDisplay.classList.remove("foco", "descanso", "finalizado");
+        phaseDisplay.classList.remove(
+            "foco",
+            "descanso",
+            "finalizado",
+            "contagem",
+            "pausado"
+        );
 
-        const classListStatus = currentPhase === "FOCO" ? "foco"
-            : currentPhase === "DESCANSO" ? "descanso"
-                : currentPhase === "FINALIZADO" ? "finalizado"
-                    : "";
+        const classListStatus =
+            displayPhase === "FOCO" ? "foco" :
+                displayPhase === "DESCANSO" ? "descanso" :
+                    displayPhase === "FINALIZADO" ? "finalizado" :
+                        displayPhase === "CONTAGEM REGRESSIVA" ? "contagem" :
+                            displayPhase === "PAUSADO" ? "pausado" : "";
 
         if (classListStatus) {
             phaseDisplay.classList.add(classListStatus);
         }
 
-        startButton.disabled = running || finished || starting;
-        pauseButton.disabled = !running;
-        applyButton.disabled = running || starting;
+        // Single play/pause button
+        toggleButton.disabled = starting || finished;
+
+        if (running) {
+            toggleButton.textContent = "Pausar";
+            toggleButton.className = "btn orange clock-main-button";
+        } else if (paused) {
+            toggleButton.textContent = "Retomar";
+            toggleButton.className = "btn green clock-main-button";
+        } else if (finished) {
+            toggleButton.textContent = "Finalizado";
+            toggleButton.className = "btn green clock-main-button";
+        } else {
+            toggleButton.textContent = "Começar";
+            toggleButton.className = "btn green clock-main-button";
+        }
+
+        // Configuration is only available when the timer is stopped
+        const settingsButton = document.getElementById("open-settings");
+
+        settingsButton.disabled = running || starting;
+
+    }
+
+    function toggleTimer() {
+        if (running) {
+            pauseTimer();
+        } else {
+            startTimer();
+        }
     }
 
     function startTimer() {
-
         if (running || finished || starting) return;
 
         initializeAudio();
 
-        // First start: perform countdown
         if (currentPhase === "PREPARE-SE") {
             startCountdown();
             return;
         }
 
-        // Resume after pause
         runTimer();
     }
 
     function startCountdown() {
-
         starting = true;
 
         currentRound = 1;
@@ -261,7 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function runTimer() {
-
+        paused = false;
         running = true;
 
         endTimestamp = Date.now() + remainingTime * 1000;
@@ -271,9 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateDisplay();
     }
 
-
     function tick() {
-
         if (!running) return;
 
         const difference = endTimestamp - Date.now();
@@ -291,8 +352,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function transitionPhase() {
-
-        clearInterval(interval)
+        clearInterval(interval);
         interval = null;
 
         running = false;
@@ -318,7 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        startTimer();
+        runTimer();
     }
 
     function completeWork() {
@@ -326,10 +386,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         currentPhase = "DESCANSO";
         remainingTime = settings.rest;
+
+        updateDisplay();
     }
 
     function completeRound() {
-
         playRoundSound();
 
         currentRound++;
@@ -338,26 +399,27 @@ document.addEventListener("DOMContentLoaded", () => {
         remainingTime = settings.work;
 
         updateDisplay();
-        startTimer();
+
+        runTimer();
     }
 
     function finishTimer() {
-
         clearInterval(interval);
         interval = null;
 
         running = false;
+        paused = false;
         finished = true;
 
         remainingTime = 0;
         currentPhase = "FINALIZADO";
 
         playFinalSound();
+
         updateDisplay();
     }
 
     function pauseTimer() {
-
         if (!running) return;
 
         clearInterval(interval);
@@ -369,12 +431,12 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         running = false;
+        paused = true;
 
         updateDisplay();
     }
 
     function resetTimer() {
-
         clearInterval(interval);
         clearInterval(countdownInterval);
         clearTimeout(countdownTimeout);
@@ -385,12 +447,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         starting = false;
         running = false;
+        paused = false;
         finished = false;
 
         currentRound = 0;
         currentPhase = "PREPARE-SE";
 
         remainingTime = settings.work;
+
         endTimestamp = null;
         countdownEndTimestamp = null;
 
@@ -398,10 +462,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     applyButton.addEventListener("click", applySettings);
-    startButton.addEventListener("click", startTimer);
-    pauseButton.addEventListener("click", pauseTimer);
+
+    toggleButton.addEventListener("click", toggleTimer);
+
     resetButton.addEventListener("click", resetTimer);
 
+    loadSettingsIntoForm();
+    updateSummary();
     resetTimer();
-
 });
