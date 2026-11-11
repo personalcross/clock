@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     let currentRound = 0;
-    let currentPhase = "READY";
+    let currentPhase = "PREPARE-SE";
 
     let remainingTime = 0;
     let endTimestamp = null;
@@ -126,25 +126,25 @@ document.addEventListener("DOMContentLoaded", () => {
         ];
 
         if (values.some(value => !Number.isInteger(value) || value < 0)) {
-            throw new Error("Please enter valid positive integers.");
+            throw new Error("Por favor, inserir valores positivos inteiros.");
         }
 
         if (rounds < 1 || rounds > 99) {
-            throw new Error("Rounds must be between 1 and 99.");
+            throw new Error("Rodadas devem estar entre 1 e 99.");
         }
 
         if (
             workMinutes > 59 || restMinutes > 59
             || workSeconds > 59 || restSeconds > 59
         ) {
-            throw new Error("Invalid time values.");
+            throw new Error("Valores inválidos para tempo.");
         }
 
         const work = workMinutes * 60 + workSeconds;
         const rest = restMinutes * 60 + restSeconds;
 
         if (work <= 0) {
-            throw new Error("Work duration must be greater than zero.");
+            throw new Error("Tempo de duração do período de foco deve ser maior que zero.");
         }
 
         return {
@@ -187,11 +187,11 @@ document.addEventListener("DOMContentLoaded", () => {
         roundDisplay.textContent =
             `Round ${currentRound} / ${settings.rounds}`;
 
-        phaseDisplay.classList.remove("work", "rest", "finished");
+        phaseDisplay.classList.remove("foco", "descanso", "finalizado");
 
-        const classListStatus = currentPhase === "WORK" ? "work"
-            : currentPhase === "REST" ? "rest"
-                : currentPhase === "FINISHED" ? "finished"
+        const classListStatus = currentPhase === "FOCO" ? "foco"
+            : currentPhase === "DESCANSO" ? "descanso"
+                : currentPhase === "FINALIZADO" ? "finalizado"
                     : "";
 
         if (classListStatus) {
@@ -210,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
         initializeAudio();
 
         // First start: perform countdown
-        if (currentPhase === "READY") {
+        if (currentPhase === "PREPARE-SE") {
             startCountdown();
             return;
         }
@@ -224,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
         starting = true;
 
         currentRound = 1;
-        currentPhase = "GET READY";
+        currentPhase = "CONTAGEM REGRESSIVA";
         remainingTime = 3;
 
         updateDisplay();
@@ -252,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             starting = false;
 
-            currentPhase = "WORK";
+            currentPhase = "FOCO";
             remainingTime = settings.work;
 
             runTimer();
@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
         running = false;
         remainingTime = 0;
 
-        if (currentPhase === "WORK") {
+        if (currentPhase === "FOCO") {
 
             if (currentRound >= settings.rounds) {
                 finishTimer();
@@ -312,7 +312,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-        } else if (currentPhase === "REST") {
+        } else if (currentPhase === "DESCANSO") {
 
             completeRound();
             return;
@@ -324,7 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function completeWork() {
         playRoundSound();
 
-        currentPhase = "REST";
+        currentPhase = "DESCANSO";
         remainingTime = settings.rest;
     }
 
@@ -334,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         currentRound++;
 
-        currentPhase = "WORK";
+        currentPhase = "FOCO";
         remainingTime = settings.work;
 
         updateDisplay();
@@ -350,7 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
         finished = true;
 
         remainingTime = 0;
-        currentPhase = "FINISHED";
+        currentPhase = "FINALIZADO";
 
         playFinalSound();
         updateDisplay();
@@ -388,7 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
         finished = false;
 
         currentRound = 0;
-        currentPhase = "READY";
+        currentPhase = "PREPARE-SE";
 
         remainingTime = settings.work;
         endTimestamp = null;
